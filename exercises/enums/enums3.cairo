@@ -55,12 +55,15 @@ impl StateImpl of StateTrait {
 
     fn process(
         ref self: State, message: Message
-    ) { // TODO: create a match expression to process the different message variants
+    ) {
         match message{
-            Message::ChangeColor(tup) => Message::ChangeColor(tup),
-            Message::Echo(string) => Message::Echo(string),
-            Message::Move(point) => Message::Move(point),
-            Message::Quit => Message::Quit
+            Message::ChangeColor(color_tuple) => {
+                let (r,g,b) = color_tuple;
+                self.change_color((r,g,b))
+            },
+            Message::Echo(val) => self.echo(val),
+            Message::Move(point) => self.move_position(point),
+            Message::Quit => self.quit()
         }
     }
 }
