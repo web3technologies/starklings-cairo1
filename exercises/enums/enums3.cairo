@@ -55,10 +55,7 @@ impl StateImpl of StateTrait {
         ref self: State, message: Message
     ) {
         match message{
-            Message::ChangeColor(color_tuple) => {
-                let (r,g,b) = color_tuple;
-                self.change_color((r,g,b))
-            },
+            Message::ChangeColor(color_tuple) => {self.change_color(color_tuple)},
             Message::Echo(val) => self.echo(val),
             Message::Move(point) => self.move_position(point),
             Message::Quit => self.quit()
