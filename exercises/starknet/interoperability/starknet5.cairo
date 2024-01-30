@@ -2,8 +2,6 @@
 // Address all the TODOs to make the tests pass!
 // Execute `starklings hint starknet5` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
-
 use core::traits::Into;
 use core::result::ResultTrait;
 use starknet::syscalls::deploy_syscall;
@@ -31,13 +29,13 @@ mod ContractA {
 
     #[storage]
     struct Storage {
-        contract_b: ContractAddress,
+        contract_b: IContractBDispatcher,
         value: u128,
     }
 
     #[constructor]
     fn constructor(ref self: ContractState, contract_b: ContractAddress) {
-        self.contract_b.write(contract_b)
+        self.contract_b.write(IContractBDispatcher {contract_address: contract_b})
     }
 
     #[external(v0)]
@@ -45,6 +43,13 @@ mod ContractA {
         fn set_value(ref self: ContractState, value: u128) -> bool {
             // TODO: check if contract_b is enabled.
             // If it is, set the value and return true. Otherwise, return false.
+            let enabled = self.contract_b.read().is_enabled();
+            if enabled {
+                self.value.write(value);
+                true
+            } else {
+                false
+            }
         }
 
         fn get_value(self: @ContractState) -> u128 {
@@ -127,6 +132,7 @@ mod test {
         let contract_b = IContractBDispatcher { contract_address: address_b };
 
         //TODO interact with contract_b to make the test pass.
+        contract_b.enable();
 
         // Tests
         assert(contract_a.set_value(300) == true, 'Could not set value');
